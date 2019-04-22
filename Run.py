@@ -97,7 +97,7 @@ if __name__ == "__main__":
 
 
     ## path initialization
-    dataset_path = '/home/ilchae/dataset/tracking/'
+    dataset_path = '/home/jimiolaniyan/Documents/Datasets/'
 
 
     seq_home = dataset_path + opts['set_type']
