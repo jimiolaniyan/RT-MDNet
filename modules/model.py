@@ -77,9 +77,6 @@ class MDNet(nn.Module):
                                         )),
                 ('fc4',   nn.Sequential(
                                         nn.Linear(512 * 3 * 3, 512),
-                                        nn.ReLU())),
-                ('fc5',   nn.Sequential(nn.Dropout(0.5),
-                                        nn.Linear(512, 512),
                                         nn.ReLU()))]))
 
         self.branches = nn.ModuleList([nn.Sequential(nn.Dropout(0.5),
@@ -103,7 +100,7 @@ class MDNet(nn.Module):
         for name, module in self.layers.named_children():
             append_params(self.params, module, name)
         for k, module in enumerate(self.branches):
-            append_params(self.params, module, 'fc6_%d'%(k))
+            append_params(self.params, module, 'fc5_%d'%(k))
 
     def set_learnable_params(self, layers):
         for k, p in self.params.iteritems():
@@ -120,7 +117,7 @@ class MDNet(nn.Module):
                 params[k] = p
         return params
 
-    def forward(self, x, k=0, in_layer='conv1', out_layer='fc6'):
+    def forward(self, x, k=0, in_layer='conv1', out_layer='fc5'):
 
         run = False
         for name, module in self.layers.named_children():
@@ -131,17 +128,17 @@ class MDNet(nn.Module):
                 if name == out_layer:
                     return x
 
-
         x = self.branches[k](x)
-        if out_layer=='fc6':
+
+        if out_layer=='fc5':
             return x
-        elif out_layer=='fc6_softmax':
+        elif out_layer=='fc5_softmax':
             return F.softmax(x)
 
     def load_model(self, model_path):
         states = torch.load(model_path)
         shared_layers = states['shared_layers']
-        self.layers.load_state_dict(shared_layers)
+        self.layers.load_state_dict(shared_layers, strict=False)
 
     def load_mat_model(self, matfile):
         mat = scipy.io.loadmat(matfile)

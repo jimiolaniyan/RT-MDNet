@@ -47,7 +47,7 @@ opts['long_interval'] = 10
 opts['w_decay'] = 0.0005 # original = 0.0005
 opts['momentum'] = 0.9
 opts['grad_clip'] = 10 # original = 10
-opts['lr_mult'] = {'fc6':10}
+opts['lr_mult'] = {'fc5':10}
 opts['ft_layers'] = ['fc']
 
 
