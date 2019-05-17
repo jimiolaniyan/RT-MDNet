@@ -1,13 +1,15 @@
-# import vot
-# from vot import Rectangle
+#!/usr/bin/python
+
+import vot
+from vot import Rectangle
 import sys
-import cv2  # imread
+import logging
 import torch
 import numpy as np
 from os.path import realpath, dirname, join
 
 from tracker_vot import RTMDNet_init, RTMDNet_track
-from utils import get_axis_aligned_bbox
+from vot_utils import get_axis_aligned_bbox, cxy_wh_2_rect
 # from utils import get_axis_aligned_bbox, cxy_wh_2_rect
 
 net_file = join(realpath(dirname(__file__)), 'models/rt-mdnet.pth')
@@ -22,21 +24,46 @@ handle = vot.VOT("polygon")
 Polygon = handle.region()
 bbox = get_axis_aligned_bbox(Polygon)
 
-# image_file = handle.frame()
-# if not image_file:
-#     sys.exit(0)
 
-# target_pos, target_sz = np.array([cx, cy]), np.array([w, h])
-# im = cv2.imread(image_file)  # HxWxC
-# state = RTMDNet_init(net_file, image_file, bbox)  # init tracker
-RTMDNet_init(net_file, image_file, bbox)  # init tracker
+c = 0
+logging.info('************* %s *************',c)
 
-# while True:
-#     image_file = handle.frame()
-#     if not image_file:
-#         break
-#     im = cv2.imread(image_file)  # HxWxC
-#     state = SiamRPN_track(state, im)  # track
-#     res = cxy_wh_2_rect(state['target_pos'], state['target_sz'])
+image_file = handle.frame()
+logging.info(image_file)
+if not image_file:
+    sys.exit(0)
 
-#     handle.report(Rectangle(res[0], res[1], res[2], res[3]))
+#state = RTMDNet_init(net_file, image_file, bbox)  # init tracker
+
+try:
+    state = RTMDNet_init(net_file, image_file, bbox)  # init tracker
+except Exception as e:
+    logging.info('error %s', e)
+
+while True:
+    c = c + 1
+    logging.info('************* %s *************',c)
+    image_file = handle.frame()
+    logging.info(image_file)
+
+    if not image_file:
+        break
+
+#    state = RTMDNet_track(state, image_file)
+ #   box = state['target_bbox']
+  #  #res = cxy_wh_2_rect(box)
+   # #handle.report(Rectangle(res[0], res[1], res[2], res[3]))
+    #handle.report(Rectangle(box[0], box[1], box[2], box[3]))
+
+    #logging.info('box: %s, res: %s', box, res)
+#    if c == 5:
+#	sys.exit(0)
+    try:
+	state = RTMDNet_track(state, image_file)
+	box = state['target_bbox']
+        #res = cxy_wh_2_rect(box)
+        #handle.report(Rectangle(res[0], res[1], res[2], res[3]))
+        handle.report(Rectangle(box[0], box[1], box[2], box[3]))
+
+    except Exception as e:
+	logging.info('error is: %s',e)

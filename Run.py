@@ -39,7 +39,6 @@ def genConfig(seq_path, set_type):
 
         if seqname == 'David':
             img_list = img_list[299:]
-          
         if seqname == 'Football1':
             img_list = img_list[0:74]
         if seqname == 'Freeman3':
@@ -50,6 +49,10 @@ def genConfig(seq_path, set_type):
             img_list = img_list[0:215]
         if seqname == 'Tiger1':
             img_list = img_list[5:]
+
+    if set_type == 'VOT':
+        img_list = sorted([seq_path + '/color/' + p for p in os.listdir(seq_path + '/color') if os.path.splitext(p)[1] == '.jpg'])
+        gt = np.loadtxt(seq_path + '/groundtruth.txt', delimiter=',')
 
         ##polygon to rect
     if gt.shape[1] == 8:

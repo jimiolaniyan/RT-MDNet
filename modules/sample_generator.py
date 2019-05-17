@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image
-
-from utils import *
+import logging
+from modules.utils import overlap_ratio
 
 def gen_samples(generator, bbox, n, overlap_range=None, scale_range=None):
 
@@ -91,4 +91,5 @@ class SampleGenerator():
 
     def get_trans_f(self):
         return self.trans_f
+
 

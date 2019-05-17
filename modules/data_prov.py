@@ -5,7 +5,7 @@ from PIL import Image
 import torch
 import torch.utils.data as data
 import matplotlib.pyplot as plt
-from utils import *
+from modules.utils import samples2maskroi, crop_image
 
 import matplotlib.patches as patches
 
