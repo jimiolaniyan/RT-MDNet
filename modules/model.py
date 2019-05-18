@@ -77,7 +77,7 @@ class MDNet(nn.Module):
                                         ))]))
 
         self.branches = nn.ModuleList([nn.Sequential(nn.Dropout(0.5),
-                                                     nn.Linear(512, 2)) for _ in range(K)])
+                                                     nn.Linear(4608, 2)) for _ in range(K)])
 
         self.roi_align_model = RoIAlignMax(3, 3, 1. / 8)
 
