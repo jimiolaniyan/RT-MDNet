@@ -43,7 +43,7 @@ def set_optimizer(model, lr_base, lr_mult=opts['lr_mult'], momentum=opts['moment
     return optimizer
 
 
-def train(model, criterion, optimizer, pos_feats, neg_feats, maxiter, in_layer='fc4'):
+def train(model, criterion, optimizer, pos_feats, neg_feats, maxiter, in_layer='fc3'):
     model.train()
 
     batch_pos = opts['batch_pos']
@@ -488,7 +488,7 @@ def run_mdnet(img_list, init_bbox, gt=None, seq='seq_name ex)Basketball', savefi
         sample_rois = Variable(torch.from_numpy(sample_rois.astype('float32'))).cuda()
         sample_feats = model.roi_align_model(feat_map, sample_rois)
         sample_feats = sample_feats.view(sample_feats.size(0), -1).clone()
-        sample_scores = model(sample_feats, in_layer='fc4')
+        sample_scores = model(sample_feats, in_layer='fc3')
         top_scores, top_idx = sample_scores[:,1].topk(5)
         top_idx = top_idx.data.cpu().numpy()
         target_score = top_scores.data.mean()

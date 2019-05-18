@@ -74,10 +74,7 @@ class MDNet(nn.Module):
 
                 ('conv3', nn.Sequential(nn.Conv2d(256, 512, kernel_size=3, stride=1,dilation=3),
                                         nn.ReLU(),
-                                        )),
-                ('fc4',   nn.Sequential(
-                                        nn.Linear(512 * 3 * 3, 512),
-                                        nn.ReLU()))]))
+                                        ))]))
 
         self.branches = nn.ModuleList([nn.Sequential(nn.Dropout(0.5),
                                                      nn.Linear(512, 2)) for _ in range(K)])
@@ -100,7 +97,7 @@ class MDNet(nn.Module):
         for name, module in self.layers.named_children():
             append_params(self.params, module, name)
         for k, module in enumerate(self.branches):
-            append_params(self.params, module, 'fc5_%d'%(k))
+            append_params(self.params, module, 'fc4_%d'%(k))
 
     def set_learnable_params(self, layers):
         for k, p in self.params.iteritems():
@@ -117,10 +114,12 @@ class MDNet(nn.Module):
                 params[k] = p
         return params
 
-    def forward(self, x, k=0, in_layer='conv1', out_layer='fc5'):
+    def forward(self, x, k=0, in_layer='conv1', out_layer='fc4'):
 
         run = False
         for name, module in self.layers.named_children():
+            if in_layer == 'fc3':
+                break
             if name == in_layer:
                 run = True
             if run:
@@ -130,9 +129,9 @@ class MDNet(nn.Module):
 
         x = self.branches[k](x)
 
-        if out_layer=='fc5':
+        if out_layer=='fc4':
             return x
-        elif out_layer=='fc5_softmax':
+        elif out_layer=='fc4_softmax':
             return F.softmax(x)
 
     def load_model(self, model_path):
