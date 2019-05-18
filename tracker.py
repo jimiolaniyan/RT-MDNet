@@ -84,7 +84,6 @@ def train(model, criterion, optimizer, pos_feats, neg_feats, maxiter, in_layer='
             for start in range(0,batch_neg_cand,batch_test):
                 end = min(start+batch_test,batch_neg_cand)
                 input = batch_neg_feats[start:end]
-                print("Input shape: {}".format(input.shape))
                 score = model(input, in_layer=in_layer)
                 if start==0:
                     neg_cand_score = score.data[:,1].clone()

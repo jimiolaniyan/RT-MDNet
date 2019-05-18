@@ -101,7 +101,7 @@ if __name__ == "__main__":
 
     ## path initialization
     dataset_path = '/home/jimiolaniyan/Documents/Datasets/'
-
+#    dataset_path = '/home/jimiolaniyan/Documents/'
 
     seq_home = dataset_path + opts['set_type']
     seq_list = [f for f in os.listdir(seq_home) if isdir(join(seq_home,f))]
